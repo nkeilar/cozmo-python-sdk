@@ -124,7 +124,9 @@ class ImageText:
             The same :class:`PIL.ImageDraw.ImageDraw` object as was passed-in with text applied.
         '''
         (bx1, by1, bx2, by2) = bounds
-        text_width, text_height = draw.textsize(self.text, font=self.font)
+        # text_width, text_height = draw.textsize(self.text, font=self.font)
+        bbox = draw.textbbox((0, 0), self.text, font=self.font)
+        text_width, text_height = bbox[2] - bbox[0], bbox[3] - bbox[1]
 
         if self.position & TOP:
             y = by1
@@ -178,7 +180,7 @@ def add_img_box_to_image(image, box, color, text=None):
     x2, y2 = box.right_x, box.bottom_y
     d.rectangle([x1, y1, x2, y2], outline=color)
     if text is not None:
-        if isinstance(text, collections.Iterable):
+        if isinstance(text, collections.abc.Iterable):
             for t in text:
                 t.render(d, (x1, y1, x2, y2))
         else:
